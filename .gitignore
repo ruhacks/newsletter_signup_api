@@ -1,3 +1,4 @@
 api/
 __pycache__
-./credentials.py
+test.json
+test2.json
