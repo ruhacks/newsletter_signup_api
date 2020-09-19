@@ -3,3 +3,4 @@ __pycache__
 test.json
 test2.json
 credentials.py
+app.log
