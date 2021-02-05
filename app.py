@@ -10,10 +10,12 @@
     
  """
 
-from flask import Flask, request, redirect, abort, url_for
+from flask import Flask, request, redirect, abort, url_for, Response
+from flask_cors import CORS, cross_origin
 from mailchimp_marketing.api_client import ApiClientError
 import mailchimp_marketing as MCM
 import hashlib, json, credentials, urllib, logging
+import requests
 
 
 URL_USED = 'http://localhost/'
@@ -108,48 +110,62 @@ def subscribeUser(signup_email, signup_name, mailchimp):
 
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-type'
+
+@app.route("/")
+@cross_origin()
+def helloWorld():
+    return('HELLO')
 
 @app.route('/signup', methods=['POST'])
+@cross_origin()
 def connectTo():
+    return_vars = {}
+
+    if(not hasattr(request, 'json') or not request.json.get('formData') or not request.json.get('formData').get('EMAIL') or not request.json.get('formData').get('NAME')):
+        return_vars['missing_data'] = 'True'
+        return Response(json.dumps(return_vars), status=404, mimetype='application/json')
+    
+
     mailchimp = connectToMailchimp() #Establish connection
-    signup_email = request.form.get('EMAIL') #Get email from form
+    signup_email = request.json.get('formData').get('EMAIL') #Get email from form
     signup_email_hash = hashlib.md5(signup_email.encode('utf-8')).hexdigest() #Get Email hash
-    signup_name = request.form.get('NAME') #Get name from form
-    return_vars = {
-        "email" : signup_email,
-        "name" : signup_name
-    }
+    signup_name = request.json.get('formData').get('NAME') #Get name from form
+    
 
     if("@" not in signup_email):
-        return redirect(URL_USED+"?invalidEmail=true", code=302)
+        return_vars['invalid_email'] = 'True'
+        return Response(json.dumps(return_vars), status=400, mimetype='application/json')
 
-    mc_dat = getUserEmailFromMailChimp(signup_email,signup_email_hash,mailchimp) #Get mailchimp respopnse\
+    mc_dat = getUserEmailFromMailChimp(signup_email,signup_email_hash,mailchimp) #Get mailchimp respopnse
+    
     if(mc_dat != False and mc_dat != 'error'): #if user exists in our contacts
         if(checkIfSubscribed(mc_dat)): #if user is already subscribed
             addLabelToUser(signup_email_hash, mailchimp)
             addGivenNameToUser(signup_name, signup_email, mailchimp)
 
             return_vars['already_subscribed'] = 'True'
-            qstr = urllib.parse.urlencode(return_vars)
-            return(redirect(URL_USED+'?'+qstr))
+            return Response(json.dumps(return_vars), status=200, mimetype='application/json')
         else:
             subscribeAnUnsubscribedUser(signup_email_hash, mailchimp)
             addLabelToUser(signup_email_hash, mailchimp)
             addGivenNameToUser(signup_name, signup_email_hash, mailchimp)
-
             return_vars['added_subscription'] = 'True'
-            qstr = urllib.parse.urlencode(return_vars)
-            return(redirect(URL_USED+'?'+qstr))
+            return Response(json.dumps(return_vars), status=201, mimetype='application/json')
     else:
         subscribeUser(signup_email, signup_name, mailchimp)
         addLabelToUser(signup_email_hash, mailchimp)
 
         return_vars['added_subscription'] = 'True'
-        qstr = urllib.parse.urlencode(return_vars)
-        return(redirect(URL_USED+'?'+qstr))
+        return Response(json.dumps(return_vars), status=201, mimetype='application/json')
     
     
-    qstr = urllib.parse.urlencode(return_vars)
-    return(redirect(URL_USED+'?'+qstr))
+    return Response(json.dumps(return_vars), status=302, mimetype='application/json')
 
     
+@app.route('/calEvents', methods=['GET'])
+def get_data():
+    calendlyConnection = requests.get('https://calendly.com/api/v1/users/me/event_types', headers= {'X-TOKEN': credentials.CALENDLY_API_KEY})
+    print(calendlyConnection.text)
+    return('done')

@@ -1,0 +1,52 @@
+{
+    "data": [
+        {
+            "type": "event_types",
+            "id": "HAFROVN2BGATLUZ3",
+            "attributes": {
+                "name": "Engineering Mentor ",
+                "color": "#dfc12d",
+                "duration": 30,
+                "created_at": "2020-09-25T00:29:29Z",
+                "updated_at": "2020-09-25T00:38:47Z",
+                "slug": "call-n-code-engineering-mentor-",
+                "active": true,
+                "description": null,
+                "location": null,
+                "url": "https:\/\/calendly.com\/ru-hacks-call-n-code-\/call-n-code-engineering-mentor-"
+            }
+        },
+        {
+            "type": "event_types",
+            "id": "HBDWKXMYADGUJYAH",
+            "attributes": {
+                "name": "Business Mentor",
+                "color": "#4a91e9",
+                "duration": 30,
+                "created_at": "2020-09-25T00:29:29Z",
+                "updated_at": "2020-09-25T00:41:58Z",
+                "slug": "30min",
+                "active": true,
+                "description": null,
+                "location": null,
+                "url": "https:\/\/calendly.com\/ru-hacks-call-n-code-\/30min"
+            }
+        },
+        {
+            "type": "event_types",
+            "id": "AHBTKUN7FFFXM3BO",
+            "attributes": {
+                "name": "60 Minute Meeting",
+                "color": "#ee5353",
+                "duration": 60,
+                "created_at": "2020-09-25T00:29:29Z",
+                "updated_at": "2020-09-25T00:29:29Z",
+                "slug": "60min",
+                "active": true,
+                "description": null,
+                "location": null,
+                "url": "https:\/\/calendly.com\/ru-hacks-call-n-code-\/60min"
+            }
+        }
+    ]
+}
