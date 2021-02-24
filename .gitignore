@@ -4,3 +4,5 @@ test.json
 test2.json
 credentials.py
 app.log
+app.ini
+wsgi.py
