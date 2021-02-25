@@ -18,7 +18,6 @@ import hashlib, json, credentials, urllib, logging
 import requests
 
 
-URL_USED = 'http://localhost/'
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
 def subscribeAnUnsubscribedUser(signup_email_hash, mailchimp):
@@ -119,7 +118,7 @@ def helloWorld():
     return('HELLO')
 
 @app.route('/signup', methods=['POST'])
-@cross_origin()
+@cross_origin(['https://ruhacks.com', 'https://www.ruhacks.com'])
 def connectTo():
     return_vars = {}
 
@@ -164,8 +163,11 @@ def connectTo():
     return Response(json.dumps(return_vars), status=302, mimetype='application/json')
 
     
-@app.route('/calEvents', methods=['GET'])
-def get_data():
-    calendlyConnection = requests.get('https://calendly.com/api/v1/users/me/event_types', headers= {'X-TOKEN': credentials.CALENDLY_API_KEY})
-    print(calendlyConnection.text)
-    return('done')
+#@app.route('/calEvents', methods=['GET'])
+#def get_data():
+#    calendlyConnection = requests.get('https://calendly.com/api/v1/users/me/event_types', headers= {'X-TOKEN': credentials.CALENDLY_API_KEY})
+#    print(calendlyConnection.text)
+#    return('done')
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
